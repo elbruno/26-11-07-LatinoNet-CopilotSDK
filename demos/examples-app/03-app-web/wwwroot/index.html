@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Microsoft Copilot SDK, streaming web demo</title>
+  <style>
+    body { font: 1rem system-ui, sans-serif; margin: 2rem auto; max-width: 48rem; padding: 0 1rem; }
+    textarea { box-sizing: border-box; min-height: 7rem; width: 100%; }
+    pre { min-height: 8rem; white-space: pre-wrap; }
+    button { margin: .5rem .5rem .5rem 0; padding: .5rem 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Streaming con Microsoft Copilot SDK</h1>
+  <p>El navegador envia texto al backend local. La credencial nunca sale del servidor.</p>
+  <form id="chat">
+    <label for="prompt">Pregunta</label>
+    <textarea id="prompt" required>Explica en dos frases como el streaming mejora una interfaz.</textarea>
+    <button id="send" type="submit">Enviar</button>
+    <button id="cancel" type="button" disabled>Cancelar</button>
+  </form>
+  <pre id="answer" aria-live="polite"></pre>
+  <p id="status" role="status"></p>
+  <script>
+    const form = document.querySelector("#chat");
+    const answer = document.querySelector("#answer");
+    const status = document.querySelector("#status");
+    const send = document.querySelector("#send");
+    const cancel = document.querySelector("#cancel");
+    let activeRequest;
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      activeRequest = new AbortController();
+      answer.textContent = "";
+      status.textContent = "Generando...";
+      send.disabled = true;
+      cancel.disabled = false;
+      try {
+        const response = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: document.querySelector("#prompt").value }),
+          signal: activeRequest.signal
+        });
+        if (!response.ok) {
+          const failure = await response.json();
+          throw new Error(failure.error || `HTTP ${response.status}`);
+        }
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let pending = "";
+        while (true) {
+          const { value, done } = await reader.read();
+          pending += decoder.decode(value || new Uint8Array(), { stream: !done });
+          let boundary;
+          while ((boundary = pending.indexOf("\n\n")) >= 0) {
+            const frame = pending.slice(0, boundary);
+            pending = pending.slice(boundary + 2);
+            const eventName = frame.match(/^event: (.+)$/m)?.[1];
+            const data = frame.match(/^data: (.+)$/m)?.[1];
+            if (!data) continue;
+            const message = JSON.parse(data);
+            if (eventName === "delta") answer.textContent += message;
+            if (eventName === "done") status.textContent = message;
+            if (eventName === "error") status.textContent = message;
+          }
+          if (done) break;
+        }
+      } catch (error) {
+        status.textContent = error.name === "AbortError"
+          ? "Solicitud cancelada."
+          : `Error: ${error.message}`;
+      } finally {
+        send.disabled = false;
+        cancel.disabled = true;
+        activeRequest = undefined;
+      }
+    });
+    cancel.addEventListener("click", () => activeRequest?.abort());
+  </script>
+</body>
+</html>

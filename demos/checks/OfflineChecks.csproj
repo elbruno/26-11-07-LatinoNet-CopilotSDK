@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\csharp-sdk-concepts\08 - WorkIQ\WorkIqSafety.cs" Link="WorkIqSafety.cs" />
+    <Compile Include="..\examples-app\01-conversacion-con-contexto\ConversationSteps.cs" Link="Applied\ConversationSteps.cs" />
+    <Compile Include="..\examples-app\02-de-texto-a-accion\SupportTicketCatalog.cs" Link="Applied\SupportTicketCatalog.cs" />
+    <Compile Include="..\examples-app\03-app-web\SseProtocol.cs" Link="Applied\SseProtocol.cs" />
+    <Compile Include="..\examples-app\03-app-web\WebTurnExecution.cs" Link="Applied\WebTurnExecution.cs" />
+    <Compile Include="..\examples-app\05-resumen-documento\DocumentSummaryPrompt.cs" Link="Applied\DocumentSummaryPrompt.cs" />
+    <None Include="..\examples-app\05-resumen-documento\Documents\sample-workshop-brief.md" Link="sample-workshop-brief.md" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
