@@ -1,50 +1,37 @@
-# BYOK: utiliza tu propio proveedor
+# BYOK: usar tus propios proveedores
 
-Cuatro proyectos independientes envían una pregunta breve en español al
-proveedor elegido. Compila desde `demos` con
-`.\scripts\Verify-Offline.ps1 -Restore`. Para todos ellos se necesita Copilot
-CLI; cada ejecución hace una llamada real al proveedor.
+Cuatro consolas independientes usan .NET 10 y `GitHub.Copilot.SDK` 1.0.11.
+Después de restaurar y compilar con `.\scripts\Verify-Offline.ps1 -Restore`,
+ejecuta los comandos desde `demos`. Cada ejecución realiza inferencia real.
 
-| Proveedor | Configuración | Protocolo |
+| Proveedor | Configuración | Comando |
 |---|---|---|
-| Microsoft Foundry | User Secrets: `Foundry:BaseUrl`, `Foundry:Model` y, opcionalmente, `Foundry:ApiKey`; sin clave usa Azure CLI y Entra. | Responses |
-| Ollama | Variables `OLLAMA_BASE_URL` y `OLLAMA_MODEL`; servicio y modelo local existentes. | Chat Completions |
-| Foundry Local | Variables `FOUNDRY_LOCAL_BASE_URL` y `FOUNDRY_LOCAL_MODEL`; servicio y modelo local existentes. | Chat Completions |
-| OpenAI | User Secrets: `OpenAI:Model` y `OpenAI:ApiKey`. | Responses |
+| Microsoft Foundry | User Secrets: `Foundry:BaseUrl`, `Foundry:Model` y clave opcional, o Entra | `dotnet run --no-build --project ".\byok\01 - Microsoft Foundry\MicrosoftFoundry.csproj"` |
+| Ollama | `OLLAMA_BASE_URL` y `OLLAMA_MODEL` | `dotnet run --no-build --project ".\byok\02 - Ollama\Ollama.csproj"` |
+| Foundry Local | `FOUNDRY_LOCAL_BASE_URL` y `FOUNDRY_LOCAL_MODEL` | `dotnet run --no-build --project ".\byok\03 - Foundry Local\FoundryLocal.csproj"` |
+| OpenAI | User Secrets: `OpenAI:Model` y `OpenAI:ApiKey` | `dotnet run --no-build --project ".\byok\04 - OpenAI\OpenAi.csproj"` |
 
-Para Foundry u OpenAI ejecuta `.\Set-DemoSecrets.ps1` desde `demos`, fuera de
-cámara. El menú pide la clave con entrada oculta. User Secrets almacena
-valores en texto plano fuera del repositorio y es solo para desarrollo.
-Foundry requiere la URL HTTPS del recurso de inferencia, no la URL de un
-proyecto o del portal. Entra requiere una sesión de Azure CLI ya iniciada.
-La clave de OpenAI no es una clave de Foundry ni una suscripción de ChatGPT.
-Los modelos sugeridos deben existir en tu cuenta.
+Para Foundry u OpenAI, usa `.\Set-DemoSecrets.ps1`: el menú muestra los
+proveedores y métodos de autenticación. La clave se solicita de forma oculta.
+El modelo y endpoint deben existir en tu cuenta. User Secrets almacena valores
+en texto plano fuera del repositorio y no reemplaza un almacén de producción.
 
-Para los proveedores locales, usa la URL real del endpoint compatible `/v1/`
-y el identificador exacto del modelo cargado. Consulta el servicio existente:
-por ejemplo, `ollama list` y `foundry server status -o json`; verifica el
-endpoint y los modelos disponibles de tu instalación. En una terminal ya
-preparada, define las variables sin inventar el puerto ni el modelo:
+Para los proveedores locales, usa el endpoint y el ID de modelo reales del
+servicio que ya tienes preparado. No inventes el puerto de Foundry Local:
+consulta `foundry server status -o json` y los modelos disponibles del
+servidor. Por ejemplo, después de identificar los valores correspondientes:
 
 ```powershell
-$env:OLLAMA_BASE_URL = Read-Host 'URL del endpoint Ollama /v1/'
-$env:OLLAMA_MODEL = Read-Host 'Identificador del modelo Ollama'
-$env:FOUNDRY_LOCAL_BASE_URL = Read-Host 'URL del endpoint Foundry Local /v1/'
-$env:FOUNDRY_LOCAL_MODEL = Read-Host 'Identificador del modelo Foundry Local'
+$env:OLLAMA_BASE_URL = 'http://127.0.0.1:11434/v1/'
+$env:OLLAMA_MODEL = '<modelo-instalado>'
+$env:FOUNDRY_LOCAL_BASE_URL = '<endpoint-real-con-v1>'
+$env:FOUNDRY_LOCAL_MODEL = '<id-real-del-modelo>'
 ```
 
-Los ejemplos no arrancan servicios ni descargan modelos. Comprueba que el
-modelo local sea compatible con las capacidades requeridas por el runtime.
-Desde `demos`, ejecuta el proveedor configurado:
+Sustituye los marcadores y el puerto de Ollama si tu servicio usa otro.
+El SDK utiliza `Type = "openai"` para describir un protocolo compatible,
+no necesariamente el proveedor OpenAI.
 
-```powershell
-dotnet run --no-build --project ".\byok\01 - Microsoft Foundry\MicrosoftFoundry.csproj"
-dotnet run --no-build --project ".\byok\02 - Ollama\Ollama.csproj"
-dotnet run --no-build --project ".\byok\03 - Foundry Local\FoundryLocal.csproj"
-dotnet run --no-build --project ".\byok\04 - OpenAI\OpenAi.csproj"
-```
-
-`Type = "openai"` describe el protocolo y no implica que todos los ejemplos
-usen el servicio de OpenAI. La opción BYOK desactiva el uso de la sesión
-almacenada como alternativa, pero no elimina todos los tokens heredados del
-proceso. No imprimas el entorno ni compartas credenciales.
+[Foundry Local CLI](https://learn.microsoft.com/azure/foundry-local/reference/reference-cli) |
+[Compatibilidad de Ollama](https://docs.ollama.com/api/openai-compatibility) |
+[Autenticación de OpenAI](https://platform.openai.com/docs/api-reference/authentication)

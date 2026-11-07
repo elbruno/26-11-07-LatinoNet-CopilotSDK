@@ -6,8 +6,10 @@ using Microsoft.Extensions.AI;
 var tool = CopilotTool.DefineTool(
     () =>
     {
-        Console.WriteLine("[handler] sdk_concept_lookup");
-        return "Streaming entrega fragmentos de una respuesta mientras se genera.";
+        Console.WriteLine("[handler] Entrada > sdk_concept_lookup");
+        var value = "Streaming entrega fragmentos de una respuesta mientras se genera.";
+        Console.WriteLine("[handler] Salida > sdk_concept_lookup");
+        return value;
     },
     // Omitir permiso adicional SOLO para esta lectura interna y acotada.
     toolOptions: new CopilotToolOptions { SkipPermission = true },

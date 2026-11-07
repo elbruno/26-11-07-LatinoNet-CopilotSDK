@@ -2,9 +2,9 @@
 **/obj/
 **/node_modules/
 **/.venv/
+**/venv/
 **/__pycache__/
 **/target/
-*.pyc
-.env
-.env.*
-!.env.example
+**/.env
+**/.env.*
+**/secrets.json

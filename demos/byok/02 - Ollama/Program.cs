@@ -1,10 +1,13 @@
 // BYOK 2: Ollama local mediante Chat Completions, sin clave ni descarga de modelos.
 using GitHub.Copilot;
 
-var endpoint = Environment.GetEnvironmentVariable("OLLAMA_BASE_URL")
-    ?? throw new InvalidOperationException("Configura OLLAMA_BASE_URL como se explica en byok/README.md.");
-var model = Environment.GetEnvironmentVariable("OLLAMA_MODEL")
-    ?? throw new InvalidOperationException("Falta OLLAMA_MODEL.");
+var endpoint = Environment.GetEnvironmentVariable("OLLAMA_BASE_URL") ?? throw new InvalidOperationException("Configura el endpoint local segun demos/byok/README.md.");
+
+var model = Environment.GetEnvironmentVariable("OLLAMA_MODEL") ?? throw new InvalidOperationException("Falta OLLAMA_MODEL.");
+
+// muestra en la consola el endpoint y el modelo configurados.
+Console.WriteLine($"Endpoint: {endpoint}");
+Console.WriteLine($"Modelo: {model}");
 
 await using var client = new CopilotClient(new CopilotClientOptions
 {

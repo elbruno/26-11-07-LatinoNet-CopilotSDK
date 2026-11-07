@@ -23,6 +23,6 @@ using var subscription = session.On<AssistantMessageDeltaEvent>(
 // SendAndWaitAsync espera el turno completo y propaga los errores del SDK.
 await session.SendAndWaitAsync(new MessageOptions
 {
-    Prompt = "Explica en espanol, en tres frases, que aporta streaming a una app."
+    Prompt = "Explica en espanol, en tres frases largas, que aporta streaming a una app. Y si conoces a la comunidad de Latino.NET"
 });
 Console.WriteLine();

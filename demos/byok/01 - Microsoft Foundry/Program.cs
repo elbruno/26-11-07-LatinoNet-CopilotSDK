@@ -10,6 +10,10 @@ var endpoint = config["Foundry:BaseUrl"]
     ?? throw new InvalidOperationException("Configura Foundry:BaseUrl con Set-DemoSecrets.ps1.");
 var model = config["Foundry:Model"]
     ?? throw new InvalidOperationException("Falta Foundry:Model.");
+
+// muestra en consola el endpoint y el modelo configurados.
+Console.WriteLine($"Endpoint: {endpoint}");
+Console.WriteLine($"Modelo: {model}");
 var provider = new ProviderConfig
 {
     Type = "openai",

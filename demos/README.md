@@ -1,13 +1,10 @@
-# Demos de Latino .NET
+# Demos del Microsoft Copilot SDK
 
-Empieza por la [guía principal](../README.md) para los requisitos, preparación,
-permisos y la presentación. El recorrido incluye
-[cinco lenguajes](examples-lang/README.md), [conceptos en C#](csharp-sdk-concepts/README.md)
-y [BYOK](byok/README.md). Los [ejemplos de aplicaciones](examples-app/README.md)
-son prácticas adicionales.
+- [Ejemplos por lenguaje](examples-lang/README.md)
+- [Conceptos del SDK en C#](csharp-sdk-concepts/README.md)
+- [Ejemplos de aplicaciones](examples-app/README.md)
+- [Modelos y proveedores BYOK](byok/README.md)
 
-Desde esta carpeta, `.\scripts\Verify-Offline.ps1 -Restore` restaura y compila
-los proyectos .NET y ejecuta comprobaciones deterministas sin inferencia.
-`.\Set-DemoSecrets.ps1` configura los secretos de desarrollo para Foundry u
-OpenAI; ejecútalo fuera de cámara. Consulta los
-[avisos de terceros](THIRD-PARTY-NOTICES.txt).
+Consulta el [README principal](../README.md) para requisitos, configuración,
+diapositivas y recursos. Los proyectos hacen llamadas reales a modelos cuando se
+ejecutan; los resultados dependen del servicio, la cuenta y la configuración.

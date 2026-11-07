@@ -1,10 +1,8 @@
 // BYOK 3: Foundry Local ya iniciado. El runbook descubre el puerto, no lo inventa.
 using GitHub.Copilot;
 
-var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_LOCAL_BASE_URL")
-    ?? throw new InvalidOperationException("Configura FOUNDRY_LOCAL_BASE_URL como se explica en byok/README.md.");
-var model = Environment.GetEnvironmentVariable("FOUNDRY_LOCAL_MODEL")
-    ?? throw new InvalidOperationException("Falta FOUNDRY_LOCAL_MODEL.");
+var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_LOCAL_BASE_URL") ?? throw new InvalidOperationException("Configura el endpoint real segun demos/byok/README.md.");
+var model = Environment.GetEnvironmentVariable("FOUNDRY_LOCAL_MODEL") ?? throw new InvalidOperationException("Falta FOUNDRY_LOCAL_MODEL.");
 
 await using var client = new CopilotClient(new CopilotClientOptions
 {
